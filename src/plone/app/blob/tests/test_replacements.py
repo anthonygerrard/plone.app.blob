@@ -11,6 +11,8 @@ from Products.ATContentTypes.interfaces import IATFile as Z2IATFile
 from Products.ATContentTypes.interfaces import IATImage as Z2IATImage
 from Products.ATContentTypes.content.file import ATFile
 from Products.ATContentTypes.content.image import ATImage
+from Products.GenericSetup.interfaces import IFilesystemExporter, \
+    IFilesystemImporter
 from plone.app.blob.interfaces import IATBlobFile, IATBlobImage
 from plone.app.blob.migrations import migrate
 from plone.app.blob.migrations import migrateATBlobFiles, migrateATBlobImages
@@ -142,6 +144,11 @@ class FileReplacementTests(ReplacementTestCase):
         self.failUnless('Plone' in data, 'pdftohtml not installed?')
         self.failIf('PDF' in data)
 
+    def testGSContentCompatible(self):
+        foo = self.folder[self.folder.invokeFactory('File', 'foo',
+            title='foo', file=getData('plone.pdf'))]
+        self.assertTrue(IFilesystemExporter(foo))
+        self.assertTrue(IFilesystemImporter(foo))
 
 class ImageReplacementTests(ReplacementTestCase):
 
@@ -303,6 +310,10 @@ class ImageReplacementTests(ReplacementTestCase):
         field = image.getField('image')
         self.assertEqual(field.getSize(image), (0, 0))
 
+    def testGSContentCompatible(self):
+        foo = self.folder[self.folder.invokeFactory('Image', 'foo')]
+        self.assertTrue(IFilesystemExporter(foo))
+        self.assertTrue(IFilesystemImporter(foo))
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)
