@@ -24,12 +24,12 @@ class ImageTraverseTests(ReplacementTestCase, ImagingTestCaseMixin):
         expected = r'<img src="%s/@@images/([-0-9a-f]{36}).(jpeg|gif|png)" ' \
             r'alt="foo" title="foo" height="(\d+)" width="(\d+)" />' % base
         groups = match(expected, tag).groups()
-        self.failUnless(groups, tag)
+        self.assertTrue(groups, tag)
         uid, ext, height, width = groups
         return uid, ext, int(width), int(height)
 
     def testImageThumb(self):
-        self.failUnless('thumb' in self.available.keys())
+        self.assertTrue('thumb' in self.available.keys())
         uid, ext, width, height = self.traverse('image/thumb')
         self.assertEqual((width, height), self.available['thumb'])
         self.assertEqual(ext, 'jpeg')
@@ -69,6 +69,27 @@ class ImageTraverseTests(ReplacementTestCase, ImagingTestCaseMixin):
         self.assertEqual(width, 42)
         self.assertEqual(height, 42)
         self.assertNotEqual(uid1, uid2, 'scale not updated?')
+
+    def testDefaultPublish(self):
+        request = self.folder.REQUEST
+        view = self.image.unrestrictedTraverse('@@images')
+        image = view.publishTraverse(request, 'image')
+        size = image.get_size()
+
+        # Rewrap image scale to leave out the image class
+        # implementation. We do this to test the situation where we do
+        # not have class-supported publishing (e.g. with schema
+        # extension).
+        image = image.aq_base.__of__(self.folder)
+
+        from ZPublisher.BaseRequest import DefaultPublishTraverse
+        adapter = DefaultPublishTraverse(image, request)
+        ob2 = adapter.publishTraverse(request, 'index_html')
+        document = ob2()
+        content_type = request.RESPONSE.getHeader('content-type')
+        content_length = request.RESPONSE.getHeader('content-length')
+        self.assertEqual(content_type, 'image/gif')
+        self.assertEqual(content_length, str(size))
 
 
 class ImagePublisherTests(ReplacementFunctionalTestCase, ImagingTestCaseMixin):
@@ -148,7 +169,7 @@ class ScalesAdapterTests(ReplacementTestCase, ImagingTestCaseMixin):
 
     def testCreateScale(self):
         foo = self.adapter.scale('image', width=100, height=80)
-        self.failUnless(foo.uid)
+        self.assertTrue(foo.uid)
         self.assertEqual(foo.mimetype, 'image/jpeg')
         self.assertEqual(foo.width, 80)
         self.assertEqual(foo.height, 80)
@@ -163,7 +184,7 @@ class ScalesAdapterTests(ReplacementTestCase, ImagingTestCaseMixin):
 
     def testGetScaleByName(self):
         foo = self.adapter.scale('image', scale='foo')
-        self.failUnless(foo.uid)
+        self.assertTrue(foo.uid)
         self.assertEqual(foo.mimetype, 'image/jpeg')
         self.assertEqual(foo.width, 60)
         self.assertEqual(foo.height, 60)
@@ -179,7 +200,7 @@ class ScalesAdapterTests(ReplacementTestCase, ImagingTestCaseMixin):
         # now upload a new one and make sure the scale has changed
         self.image.update(image=self.getImage('image.jpg'))
         foo2 = self.adapter.scale('image', scale='foo')
-        self.failIf(foo1.data == foo2.data, 'scale not updated?')
+        self.assertFalse(foo1.data == foo2.data, 'scale not updated?')
 
     def testCustomSizeChange(self):
         # set custom image sizes & view a scale
@@ -197,10 +218,12 @@ class ScalesAdapterTests(ReplacementTestCase, ImagingTestCaseMixin):
     def testScaleThatCausesErrorsCanBeSuppressed(self):
         field = self.image.getField('image')
         field.swallowResizeExceptions = False
-        self.assertRaises(Exception, self.adapter.scale, 'image')
+        self.assertRaises(Exception, self.adapter.scale, 'image',
+                          direction='keep', width=42)
         # scaling exceptions should be "swallowed" when set on the field...
         field.swallowResizeExceptions = True
-        self.assertEqual(self.adapter.scale('image'), None)
+        self.assertEqual(self.adapter.scale('image',
+                                            direction='keep', width=42), None)
 
 
 def test_suite():
