@@ -8,6 +8,10 @@ Changelog
   (that is like ATBlob, but for not-file-like contents)
   [keul]
 
+1.5.6 (unreleased)
+------------------
+- Don't fail on obsucure chars in filename
+  [tomgross]
 
 1.5.5 (2012-11-29)
 ------------------
