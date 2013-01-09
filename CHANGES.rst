@@ -10,7 +10,17 @@ Changelog
 
 1.5.6 (unreleased)
 ------------------
-- Don't fail on obsucure chars in filename
+
+- Fix BLOB migration when LinguaPlone is installed.
+  Also for ATFile.
+
+  CAUTION: when the fix was discussed with witsch, 
+  he pointed to the fact that the files would be 
+  entirely loaded in memory during migration.
+  This could potentially eat too much memory.
+  [gotcha]
+
+- Don't fail on obscure chars in filename
   [tomgross]
 
 1.5.5 (2012-11-29)
