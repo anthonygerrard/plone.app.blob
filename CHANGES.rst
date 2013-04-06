@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.5.8 (unreleased)
+1.5.8 (2013-04-06)
 ------------------
 
 - Make sure the id is safe before setting the filename as id
