@@ -4,8 +4,8 @@ Changelog
 1.5.8 (2013-04-06)
 ------------------
 
-- Make sure the id is safe before setting the filename as id
-  [pbauer]
+- Use obj.Schema() instead of obj.schema in the migration process.
+  [gbastien]
 
 
 1.5.7 (2013-03-05)
