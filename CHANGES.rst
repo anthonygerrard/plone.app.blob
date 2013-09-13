@@ -4,7 +4,8 @@ Changelog
 1.5.9 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Make sure mimetype is not None and use use filename for detection if available.
+  [tschanzt]
 
 
 1.5.8 (2013-04-06)
