@@ -13,3 +13,6 @@ parts/
 var/
 .mr.developer.cfg
 extras/
+
+/.project
+*.pydevproject

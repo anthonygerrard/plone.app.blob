@@ -9,12 +9,6 @@ Changelog
   [keul] [anthonygerrard]
 
 
-1.5.11 (unreleased)
--------------------
-
-- Nothing changed yet.
-
-
 1.5.10 (2014-04-16)
 -------------------
 
@@ -58,6 +52,7 @@ Changelog
 
 - Don't fail on obscure chars in filename
   [tomgross]
+
 
 1.5.5 (2012-11-29)
 ------------------
@@ -111,6 +106,7 @@ Changelog
   ``index_html`` template would be used, rendering an HTML page
   instead of the image.
   [malthe]
+
 
 1.5.1 (2011-08-19)
 ------------------
