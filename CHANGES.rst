@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.6 (unreleased)
+----------------
+
+- Added support for blob News Items through the new ATBlobContent
+  (that is like ATBlob, but for not-file-like contents)
+  [keul] [anthonygerrard]
+
+
 1.5.11 (unreleased)
 -------------------
 
